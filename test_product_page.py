@@ -3,6 +3,7 @@ from faker import Faker
 from pages.cart_page import CartPage
 from pages.login_page import LoginPage
 from pages.product_page import ProductPage
+from random import randint
 
 links = [
     "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=newYear2019",
@@ -13,7 +14,7 @@ offer_link_template = "http://selenium1py.pythonanywhere.com/catalogue/coders-at
 offer_links = [f"{offer_link_template}{i}" for i in range(0, 10)]
 fake = Faker()
 product_link = "http://selenium1py.pythonanywhere.com/catalogue/the-shellcoders-handbook_209"
-
+random_number = randint(1, 100)
 
 class TestUserAddToCartFromProductPage:
     @pytest.fixture(scope="function", autouse=True)
@@ -22,7 +23,7 @@ class TestUserAddToCartFromProductPage:
         product_page.open()
         product_page.go_to_login_page()
         login_page = LoginPage(browser, browser.current_url)
-        login_page.register_new_user(faker.email(), faker.password())
+        login_page.register_new_user(f'qwerty{random_number}@mail.ru', 'Test12345678!')
         login_page.should_be_authorized_user()
 
     def test_user_cant_see_success_message(self, browser) -> None:
