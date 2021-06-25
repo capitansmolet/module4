@@ -4,15 +4,6 @@ from selenium.webdriver.chrome.options import Options
 
 
 def pytest_addoption(parser):
-    """
-    для запуска :
-        pytest -s -v --tb=short --browser_name=firefox test_conftest.py
-        pytest -s -v --tb=short --browser_name=chrome --language=en test_conftest.py
-    по умолчанию броузер 'chrome' и язык 'en'
-        pytest -s -v --tb=line test_main_page.py
-        pytest -s -v --alluredir=reports --tb=short test_main_page.py
-        ~/allure/bin/allure serve reports
-    """
     parser.addoption('--browser_name', action='store', default='chrome',
                      help="Choose browser: chrome or firefox")
     parser.addoption('--language', action='store', default='en',
