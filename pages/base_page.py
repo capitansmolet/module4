@@ -1,56 +1,76 @@
 import math
-from typing import Sequence
 
-from selenium.common.exceptions import NoAlertPresentException
-from selenium.common.exceptions import TimeoutException
-from selenium.webdriver import Remote
-from selenium.webdriver.support import expected_conditions as ExpCond
-from selenium.webdriver.support.wait import WebDriverWait
+from selenium.common.exceptions import (NoAlertPresentException,
+                                        NoSuchElementException,
+                                        TimeoutException)
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
 from .locators import BasePageLocators
 
 
 class BasePage:
-    def __init__(self, browser: Remote, url: str) -> None:
-        super().__init__()
+    def __init__(self, browser, url, timeout=10):
         self.browser = browser
         self.url = url
+        self.browser.implicitly_wait(timeout)
 
-    def open(self) -> None:
-        self.browser.get(self.url)
+    def go_to_basket_page(self):
+        """Переход на страницу корзины товаров."""
+        basket_link = self.browser.find_element(*BasePageLocators.
+                                                BASKET_LINK)
+        basket_link.click()
 
-    def is_element_present(self, how: str, what: str, timeout=4) -> bool:
-        try:
-            WebDriverWait(self.browser, timeout).until(
-                ExpCond.presence_of_element_located((how, what)))
-        except TimeoutException:
-            return False
-
-        return True
-
-    def is_text_present(self, how: str, what: str, text: str) -> bool:
-        return text in self.browser.find_element(how, what).text
-
-    def is_not_element_present(self, how, what, timeout=4):
-        try:
-            WebDriverWait(self.browser, timeout).until(
-                ExpCond.presence_of_element_located((how, what)))
-        except TimeoutException:
-            return True
-
-        return False
+    def go_to_login_page(self):
+        """Переход на страницу авторизации и регистрации."""
+        login_link = self.browser.find_element(*BasePageLocators.
+                                               MAIN_LOGIN_LINK)
+        login_link.click()
 
     def is_disappeared(self, how, what, timeout=4):
+        """Возвращает True, если элемент исчезает со страницы."""
         try:
-            WebDriverWait(self.browser, timeout, 1,
-                          TimeoutException).until_not(
-                              ExpCond.presence_of_element_located((how, what)))
+            (WebDriverWait(self.browser, timeout, 1, TimeoutException).
+             until_not(EC.presence_of_element_located((how, what))))
         except TimeoutException:
             return False
-
         return True
 
-    def solve_quiz_and_get_code(self) -> None:
+    def is_element_present(self, how, what):
+        """Возвращает True, если элемент присутствует на странице."""
+        try:
+            self.browser.find_element(how, what)
+        except NoSuchElementException:
+            return False
+        return True
+
+    def is_not_element_present(self, how, what, timeout=4):
+        """Провереят, что элемент не появляется на странице."""
+        try:
+            WebDriverWait(self.browser, timeout).until(
+                EC.presence_of_element_located((how, what)))
+        except TimeoutException:
+            return True
+        return False
+
+    def open(self):
+        """Открывает страницу по ссылке."""
+        self.browser.get(self.url)
+
+    def should_be_authorized_user(self):
+        """Возвращает True, если пользователь авторизован."""
+        assert self.is_element_present(
+            *BasePageLocators.USER_ICON), ("User icon is not presented,"
+                                           " probably unauthorised user")
+
+    def should_be_login_link(self):
+        """Возвращает True, если есть кнопка перехода
+         на страницу авторизации."""
+        assert self.is_element_present(
+            *BasePageLocators.MAIN_LOGIN_LINK), "Login link is not presented"
+
+    def solve_quiz_and_get_code(self):
+        """Отвечает на квиз, закрывает всплывающее окно."""
         alert = self.browser.switch_to.alert
         x = alert.text.split(" ")[2]
         answer = str(math.log(abs((12 * math.sin(float(x))))))
@@ -58,26 +78,8 @@ class BasePage:
         alert.accept()
         try:
             alert = self.browser.switch_to.alert
-            print(f"Your code: {alert.text}")
+            alert_text = alert.text
+            print(f"Your code: {alert_text}")
             alert.accept()
         except NoAlertPresentException:
             print("No second alert presented")
-
-    def go_to_login_page(self):
-        self._move_to_page(BasePageLocators.LOGIN_LINK)
-
-    def go_to_cart_page(self):
-        self._move_to_page(BasePageLocators.CART_BUTTON)
-
-    def should_be_authorized_user(self):
-        assert self.is_element_present(
-            *BasePageLocators.USER_ICON
-        ), "User icon is not presented, probably unauthorised user"
-
-    def should_be_login_link(self):
-        assert self.is_element_present(
-            *BasePageLocators.LOGIN_LINK), "Login link is not presented"
-
-    def _move_to_page(self, selector: Sequence[str]) -> None:
-        link = self.browser.find_element(*selector)
-        link.click()
