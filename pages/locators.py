@@ -2,33 +2,43 @@ from selenium.webdriver.common.by import By
 
 
 class BasePageLocators:
-    LOGIN_LINK = (By.ID, "login_link")
-    LOGIN_LINK_INVALID = (By.ID, "login_link_inv")
-    CART_BUTTON = (By.CSS_SELECTOR, ".basket-mini a.btn.btn-default")
-    USER_ICON = (By.CLASS_NAME, "icon-user")
+    BASKET_LINK = (By.CSS_SELECTOR, ".basket-mini span a")
+    MAIN_LOGIN_LINK = (By.CSS_SELECTOR, "#login_link")
+    USER_ICON = (By.CSS_SELECTOR, ".icon-user")
+
+
+class BasketPageLocators:
+    BASKET_MESSAGE = (By.CSS_SELECTOR, "#content_inner p")
+    ITEMS_MARK = (By.CSS_SELECTOR, "h2.col-sm-6.h3")
 
 
 class LoginPageLocators:
-    LOGIN_BUTTON = (By.ID, "login_link")
-    EMAIL_INPUT = (By.NAME, "registration-email")
-    PASSWORD_INPUT = (By.NAME, "registration-password1")
-    REPEAT_PASSWORD_INPUT = (By.NAME, "registration-password2")
-    REGISTER_BUTTON = (By.NAME, "registration_submit")
-    LOGIN_FORM = (By.ID, "login_form")
-    REGISTER_FORM = (By.ID, "register_form")
+    LOGIN_FORM = (By.CSS_SELECTOR, "#login_form")
+    REGISTER_BUTTON = (By.CSS_SELECTOR, "[name='registration_submit']")
+    REGISTER_CONFIRM_PASSWORD = (By.CSS_SELECTOR, "#id_registration-password2")
+    REGISTER_EMAIL = (By.CSS_SELECTOR, "#id_registration-email")
+    REGISTER_FORM = (By.CSS_SELECTOR, "#register_form")
+    REGISTER_PASSWORD = (By.CSS_SELECTOR, "#id_registration-password1")
 
 
 class ProductPageLocators:
-    BUTTON_ADD_TO_CART = (By.CLASS_NAME, "btn-add-to-basket")
-    ADDING_SUCCESS = (By.CSS_SELECTOR, "div.alert-success")
-    ALERT_ADDED_TO_CART = (By.CSS_SELECTOR,
-                           "#messages>div:first-child .alertinner strong")
-    ALERT_CART_STATUS = (By.CSS_SELECTOR, ".alert-noicon.alert-info p")
-    PRICE_VALUE = (By.CLASS_NAME, "price_color")
-    PRODUCT_NAME = (By.TAG_NAME, "h1")
-    PRODUCT_PRICE = (By.CSS_SELECTOR, "p.price_color")
+    BASKET_BUTTON = (By.CSS_SELECTOR, ".btn-add-to-basket")
+    COST_MESSAGE = (By.CSS_SELECTOR,
+                    "#messages > div:nth-child(3) > div > p > strong")
+    PRODUCT_COST = (By.CSS_SELECTOR, ".product_main p.price_color")
+    PRODUCT_MESSAGE = (By.CSS_SELECTOR,
+                       "#messages > div > div strong")
+    PRODUCT_NAME = (By.CSS_SELECTOR, ".product_main > h1")
+    SUCCESS_MESSAGE = (By.CSS_SELECTOR, "#messages > div > div")
 
 
-class CartPageLocators:
-    CART_ELEMENT = (By.CLASS_NAME, "basket-items")
-    BASKET_EMPTY_TEXT_ELEMENT = (By.CSS_SELECTOR, "div#content_inner > p")
+class LinksLocators:
+    BASKET_LINK = "http://selenium1py.pythonanywhere.com/en-gb/basket/"
+    FROM_PRODUCT_TO_LOGIN_LINK = ("http://selenium1py.pythonanywhere.com/"
+                                  "en-gb/catalogue/the-city-and-the-stars_95/")
+    LOGIN_LINK = "http://selenium1py.pythonanywhere.com/ru/accounts/login/"
+    MAIN_LINK = "http://selenium1py.pythonanywhere.com/"
+    PRODUCT_LINK = ("http://selenium1py.pythonanywhere.com/"
+                    "catalogue/the-shellcoders-handbook_209/?promo=newYear")
+    PRODUCT_BASE_LINK = ("http://selenium1py.pythonanywhere.com/"
+                         "catalogue/coders-at-work_207")
